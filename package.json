@@ -1,0 +1,43 @@
+{
+  "name": "ventee",
+  "version": "0.0.1",
+  "description": "Chrome extension for people who need a place to vent",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --env.dev --open --watch",
+    "build": "webpack --env.dev",
+    "build:prod": "./node_modules/.bin/tsc && \"./node_modules/.bin/webpack\" -p --env.prod",
+    "transpile": "./node_modules/.bin/tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacob-pecile/ventee.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacob-pecile/ventee/issues"
+  },
+  "homepage": "https://github.com/jacob-pecile/ventee#readme",
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "react": "16.9.0",
+    "react-dom": "^16.9.0",
+    "styled-components": "^4.3.2",
+    "typescript": "3.5.3",
+    "webpack": "4.39.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-styled-components": "^1.10.6",
+    "babel-polyfill": "^6.26.0",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.0.4",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
+  }
+}

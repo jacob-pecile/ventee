@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+  
+    "name": "Ventee",
+    "description": "Chrome extension for people who need a place to vent",
+    "version": "1.0",
+  
+    "browser_action": {
+     "default_icon": "icon.png"
+    },
+    "permissions": [
+     "activeTab"
+     ],
+     "background" : {
+        "scripts" : ["background.js"]
+      }
+  }
