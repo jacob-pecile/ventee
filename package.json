@@ -21,6 +21,8 @@
   "homepage": "https://github.com/jacob-pecile/ventee#readme",
   "dependencies": {
     "classnames": "^2.2.6",
+    "confetti-js": "0.0.18",
+    "gotta-go-form": "^1.0.21",
     "react": "16.9.0",
     "react-dom": "^16.9.0",
     "styled-components": "^4.3.2",
@@ -37,6 +39,7 @@
     "babel-polyfill": "^6.26.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.0.4",
+    "tslint": "^6.1.1",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.8.0"
   }

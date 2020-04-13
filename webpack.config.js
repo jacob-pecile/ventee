@@ -16,11 +16,11 @@ module.exports = env => {
     });
 
     return {
-        entry:{
-            "Ventee":["babel-polyfill", "./app/Index.tsx"]
+        entry: {
+            "ventee": ["babel-polyfill", "./app/index.tsx"]
         },
         output: {
-            path:  path.resolve(__dirname, "."),
+            path: path.resolve(__dirname, "."),
             filename: "./dist/[name].js",
             libraryTarget: 'umd',
             umdNamedDefine: true,
@@ -28,10 +28,10 @@ module.exports = env => {
         },
         module: {
             rules: [
-                { 
+                {
                     test: /\.tsx?$/,
                     loader: "babel-loader!ts-loader"
-                },                        
+                },
                 {
                     test: /\.jsx?$/,
                     loader: 'babel-loader',
@@ -39,18 +39,18 @@ module.exports = env => {
                     options: {
                         presets: ['react', 'es2015']
                     }
-                },   
+                },
                 { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
             ]
         },
         devtool: "sourcemap",
-        plugins:[
+        plugins: [
             envConfig
         ],
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".json", ".css"]
         },
-        devServer:{
+        devServer: {
             contentBase: "./",
             port: 8888
         }
