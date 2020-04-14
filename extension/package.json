@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --env.dev --open --watch",
-    "build": "webpack --env.dev",
+    "build": "parcel build index.html",
     "build:prod": "./node_modules/.bin/tsc && \"./node_modules/.bin/webpack\" -p --env.prod",
     "transpile": "./node_modules/.bin/tsc",
-    "preinstall": "npx npm-force-resolutions"
+    "uninstall-webpack-dependencies": "npm uninstall @babel/core @babel/preset-env @types/react @types/react-dom babel-loader babel-polyfill babel-preset-react ts-loader webpack webpack-cli webpack-dev-server typescript --save-dev"
   },
   "repository": {
     "type": "git",
@@ -26,30 +26,11 @@
     "gotta-go-form": "^1.0.21",
     "react": "16.9.0",
     "react-dom": "^16.9.0",
-    "styled-components": "^4.3.2",
-    "typescript": "3.5.3",
-    "webpack": "4.39.3"
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@types/react": "^16.9.2",
-    "@types/react-dom": "^16.9.0",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-styled-components": "^1.10.6",
-    "babel-polyfill": "^6.26.0",
-    "source-map-loader": "^0.2.4",
-    "ts-loader": "^6.0.4",
+    "parcel-bundler": "^1.12.4",
     "tslint": "^6.1.1",
-    "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0",
-    "minimist": "^1.2.5",
-    "kind-of": "^6.0.3",
-    "serialize-javascript": "^2.1.1"
-  },
-  "resolutions": {
-    "minimist": "^1.2.5",
-    "kind-of": "^6.0.3",
-    "serialize-javascript": "^2.1.1"
+    "typescript": "^3.8.3"
   }
 }
