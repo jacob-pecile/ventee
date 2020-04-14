@@ -7,7 +7,8 @@
     "start": "webpack-dev-server --env.dev --open --watch",
     "build": "webpack --env.dev",
     "build:prod": "./node_modules/.bin/tsc && \"./node_modules/.bin/webpack\" -p --env.prod",
-    "transpile": "./node_modules/.bin/tsc"
+    "transpile": "./node_modules/.bin/tsc",
+    "preinstall": "npx npm-force-resolutions"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,14 @@
     "ts-loader": "^6.0.4",
     "tslint": "^6.1.1",
     "webpack-cli": "^3.3.7",
-    "webpack-dev-server": "^3.8.0"
+    "webpack-dev-server": "^3.8.0",
+    "minimist": "^1.2.5",
+    "kind-of": "^6.0.3",
+    "serialize-javascript": "^2.1.1"
+  },
+  "resolutions": {
+    "minimist": "^1.2.5",
+    "kind-of": "^6.0.3",
+    "serialize-javascript": "^2.1.1"
   }
 }
