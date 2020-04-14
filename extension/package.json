@@ -4,11 +4,7 @@
   "description": "Chrome extension for people who need a place to vent",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --env.dev --open --watch",
-    "build": "parcel build index.html",
-    "build:prod": "./node_modules/.bin/tsc && \"./node_modules/.bin/webpack\" -p --env.prod",
-    "transpile": "./node_modules/.bin/tsc",
-    "uninstall-webpack-dependencies": "npm uninstall @babel/core @babel/preset-env @types/react @types/react-dom babel-loader babel-polyfill babel-preset-react ts-loader webpack webpack-cli webpack-dev-server typescript --save-dev"
+    "build": "parcel build index.html"
   },
   "repository": {
     "type": "git",
