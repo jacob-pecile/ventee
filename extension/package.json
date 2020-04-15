@@ -4,6 +4,7 @@
   "description": "Chrome extension for people who need a place to vent",
   "main": "index.js",
   "scripts": {
+    "prebuild": "rm dist/app*",
     "build": "parcel build index.html"
   },
   "repository": {
@@ -17,6 +18,8 @@
   },
   "homepage": "https://github.com/jacob-pecile/ventee#readme",
   "dependencies": {
+    "aws-amplify": "^3.0.8",
+    "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "confetti-js": "0.0.18",
     "gotta-go-form": "^1.0.21",
@@ -25,6 +28,8 @@
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
+    "@types/node": "^13.11.1",
+    "@types/react": "^16.9.34",
     "parcel-bundler": "^1.12.4",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"

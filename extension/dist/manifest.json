@@ -16,5 +16,8 @@
     "scripts": [
       "background.js"
     ]
-  }
+  },
+  "permissions": [
+    "https://9cxulb4px0.execute-api.us-east-1.amazonaws.com/*"
+  ]
 }
