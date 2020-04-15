@@ -1,5 +1,5 @@
 {
-  "name": "ventee",
+  "name": "ventee-extenstion",
   "version": "0.0.1",
   "description": "Chrome extension for people who need a place to vent",
   "main": "index.js",

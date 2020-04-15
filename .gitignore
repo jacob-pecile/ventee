@@ -3,3 +3,6 @@ extension/lib
 extension/dist/app*
 extension/dist/index.html
 extension/.cache
+
+server/dist
+server/.cache

@@ -1,0 +1,26 @@
+{
+  "name": "ventee-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/handler.ts",
+  "scripts": {
+    "build": "parcel build src/handler.ts --no-source-maps --target node --bundle-node-modules --out-file index.js",
+    "transpile": "./node_modules/.bin/tsc"
+  },
+  "keywords": [
+    "node",
+    "typescript",
+    "lambda"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.11.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.656.0",
+    "parcel-bundler": "^1.12.4",
+    "uuid": "^7.0.3"
+  }
+}
