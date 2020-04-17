@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { User } from '../types/venteeWeb';
-import { FormDefinition, FormType } from 'gotta-go-form';
-import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
-import AWS from 'aws-sdk';
+import { User, UserStatus } from '../types/venteeWeb';
+import { FormDefinition } from 'gotta-go-form';
+import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { handleOAuthForm } from './handlers/handleOauthForm';
 
 var Cookies = require('js-cookie');
 var JWTDecode = require('jwt-decode');
@@ -11,50 +11,21 @@ export const useVentee = (userPool: CognitoUserPool) => {
 
     const [user, setUser] = useState(confirmJWT(userPool));
 
-    let definition: FormDefinition = {
-        sections: [{
-            fields: [
-                {
-                    title: 'User Name',
-                    accessor: 'Username',
-                    type: FormType.Input,
-                    mandatoryMessage: 'please enter a username'
-                },
-                {
-                    title: 'Password',
-                    accessor: 'Password',
-                    type: FormType.Input,
-                    mandatoryMessage: 'please enter a password',
-                    validation: [
-                        {
-                            validate: (password) => password.value.length >= 8,
-                            errorMessage: 'password must be at least 8 characters long.'
-                        },
-                        {
-                            validate: (password) => password.value.match(/^[0-9]*[A-Za-z]+[0-9]*$/),
-                            errorMessage: 'password must contain upper case and lower case letters.'
-                        }
-                    ],
-                    properties: { inputProps: { type: 'password' } }
-                }
-            ]
-        }
-        ]
-    };
+    let definition: FormDefinition = handleOAuthForm(user);
 
-    let onSubmit = (authenticationData) => {
-        let authenticationDetails = new AuthenticationDetails(
-            authenticationData
-        );
-
+    let onLogin = (authenticationData) => {
         let userData = {
             Username: authenticationData.Username,
             Pool: userPool
         };
 
         let cognitoUser = new CognitoUser(userData);
+        let authenticationDetails = new AuthenticationDetails(
+            authenticationData
+        );
 
         cognitoUser.authenticateUser(authenticationDetails, {
+
             onSuccess: (result) => {
                 let jwt = result.getAccessToken().getJwtToken();
                 console.log(result.getAccessToken().getJwtToken());
@@ -62,12 +33,114 @@ export const useVentee = (userPool: CognitoUserPool) => {
                 Cookies.set('ventee_jwt', jwt);
 
                 setUser({
-                    isAuthenticated: true,
-                    userName: JWTDecode(jwt).username
+                    ...user,
+                    status: UserStatus.AUTHENTICATED,
+                    userName: authenticationData.Username
                 });
 
             },
-            newPasswordRequired: (result) => {
+            onFailure: (err) => {
+                if (err.code === 'PasswordResetRequiredException') {
+                    setUser({
+                        ...user,
+                        status: UserStatus.SEND_VERIFICATION,
+                        userName: authenticationData.Username
+                    });
+                    return;
+                }
+                alert(err.message || JSON.stringify(err));
+            }
+        });
+    };
+
+    let onSignUp = (authenticationData) => {
+        let attributeList = [];
+        let dataEmail = {
+            Name: 'email',
+            Value: authenticationData.email,
+        };
+
+        attributeList.push(new CognitoUserAttribute(dataEmail));
+
+        userPool.signUp(authenticationData.userName, authenticationData.password, attributeList, null, (
+            err,
+            result
+        ) => {
+            if (err) {
+                alert(err.message || JSON.stringify(err));
+                return;
+            }
+
+            setUser({
+                status: UserStatus.EMAIL_CONFIRMATION,
+                userName: authenticationData.userName,
+                email: authenticationData.email
+            });
+        });
+    };
+
+    let onConfirmEmail = (formResult) => {
+        let userData = {
+            Username: user.userName,
+            Pool: userPool
+        };
+
+        let cognitoUser = new CognitoUser(userData);
+
+        cognitoUser.confirmRegistration(formResult.verificationCode, true, (err, result) => {
+            if (err) {
+                alert(err.message || JSON.stringify(err));
+                return;
+            }
+
+            let jwt = result.getAccessToken().getJwtToken();
+            console.log(result.getAccessToken().getJwtToken());
+
+            Cookies.set('ventee_jwt', jwt);
+
+            setUser({
+                ...user,
+                status: UserStatus.AUTHENTICATED
+            });
+        });
+    };
+
+    let onPasswordReset = (formResult) => {
+        let userData = {
+            Username: user.userName,
+            Pool: userPool
+        };
+
+        let cognitoUser = new CognitoUser(userData);
+
+        cognitoUser.confirmPassword(formResult.verificationCode, formResult.password, {
+            onSuccess: () => {
+                console.log('Password confirmed!');
+                setUser({
+                    ...user,
+                    status: UserStatus.AUTHENTICATED
+                });
+            },
+            onFailure: (err) => {
+                console.log('Password not confirmed!');
+            },
+        });
+
+    };
+
+    let sendVerificationCode = (formResult) => {
+        let userData = {
+            Username: formResult.username,
+            Pool: userPool
+        };
+
+        let cognitoUser = new CognitoUser(userData);
+        cognitoUser.forgotPassword({
+            onSuccess: (data) => {
+                setUser({
+                    ...user,
+                    status: UserStatus.PASSWORD_RESET
+                });
             },
             onFailure: (err) => {
                 alert(err.message || JSON.stringify(err));
@@ -75,17 +148,41 @@ export const useVentee = (userPool: CognitoUserPool) => {
         });
     };
 
+    let submissionCalculator = {
+        [UserStatus.UNAUTHENTICATED]: onLogin,
+        [UserStatus.SIGN_UP]: onSignUp,
+        [UserStatus.EMAIL_CONFIRMATION]: onConfirmEmail,
+        [UserStatus.PASSWORD_RESET]: onPasswordReset,
+        [UserStatus.SEND_VERIFICATION]: sendVerificationCode
+    };
+
     let footeractions = [
         {
             text: 'Submit',
             type: 'Primary',
             validate: true,
-            onClick: onSubmit
+            onClick: submissionCalculator[user.status]
         }
     ];
 
+    let onCreateNewUser = () => {
+        setUser({
+            ...user,
+            status: UserStatus.SIGN_UP
+        });
+    };
+
+    let onForgotPassword = () => {
+        setUser({
+            ...user,
+            status: UserStatus.SEND_VERIFICATION
+        });
+    };
+
     return {
         user,
+        onCreateNewUser,
+        onForgotPassword,
         definition,
         footeractions
     };
@@ -98,12 +195,14 @@ const confirmJWT = (userPool: CognitoUserPool) => (): User => {
 
     if (!jwt) {
         return {
-            isAuthenticated: false
+            status: UserStatus.UNAUTHENTICATED
         };
     }
 
+    //TODO: check expiry
+
     return {
-        isAuthenticated: true,
+        status: UserStatus.AUTHENTICATED,
         userName: JWTDecode(jwt).username
     };
 

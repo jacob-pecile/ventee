@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import { useVentee } from '../hooks/useVentee';
 
-import { Form } from 'gotta-go-form';
+import { UserStatus } from '../types/venteeWeb';
+import OAuthContainer from '../components/OAuthContainer';
 
 interface VenteeProps {
     userPool: CognitoUserPool;
@@ -14,12 +15,14 @@ const Ventee = (props: VenteeProps) => {
     let { userPool } = props;
 
     let { user, definition, footeractions } = useVentee(userPool);
+    let isAuthenticated = user.status === UserStatus.AUTHENTICATED;
 
 
     return (
         <div className={props.className}>
-            <Form formDefinition={definition} footerActions={footeractions} />
-            {user.isAuthenticated && <span>got em</span>}
+            {!isAuthenticated ?
+                <OAuthContainer definition={definition} footerActions={footeractions} status={user.status} /> :
+                <span>got em</span>}
         </div>
     );
 };
@@ -27,4 +30,8 @@ const Ventee = (props: VenteeProps) => {
 
 export default styled(Ventee)`
     display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #11b053;
 `;
