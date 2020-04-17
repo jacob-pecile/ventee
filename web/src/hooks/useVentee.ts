@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, UserStatus } from '../types/venteeWeb';
+import { User, UserStatus, ExtraAuthAction } from '../types/venteeWeb';
 import { FormDefinition } from 'gotta-go-form';
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import { handleOAuthForm } from './handlers/handleOauthForm';
@@ -35,7 +35,8 @@ export const useVentee = (userPool: CognitoUserPool) => {
                 setUser({
                     ...user,
                     status: UserStatus.AUTHENTICATED,
-                    userName: authenticationData.Username
+                    userName: authenticationData.Username,
+                    authMessage: ''
                 });
 
             },
@@ -62,7 +63,7 @@ export const useVentee = (userPool: CognitoUserPool) => {
 
         attributeList.push(new CognitoUserAttribute(dataEmail));
 
-        userPool.signUp(authenticationData.userName, authenticationData.password, attributeList, null, (
+        userPool.signUp(authenticationData.username, authenticationData.password, attributeList, null, (
             err,
             result
         ) => {
@@ -73,7 +74,7 @@ export const useVentee = (userPool: CognitoUserPool) => {
 
             setUser({
                 status: UserStatus.EMAIL_CONFIRMATION,
-                userName: authenticationData.userName,
+                userName: authenticationData.username,
                 email: authenticationData.email
             });
         });
@@ -93,14 +94,10 @@ export const useVentee = (userPool: CognitoUserPool) => {
                 return;
             }
 
-            let jwt = result.getAccessToken().getJwtToken();
-            console.log(result.getAccessToken().getJwtToken());
-
-            Cookies.set('ventee_jwt', jwt);
-
             setUser({
                 ...user,
-                status: UserStatus.AUTHENTICATED
+                status: UserStatus.UNAUTHENTICATED,
+                authMessage: 'USER CONFIRMED! please use new credentials now.'
             });
         });
     };
@@ -118,7 +115,8 @@ export const useVentee = (userPool: CognitoUserPool) => {
                 console.log('Password confirmed!');
                 setUser({
                     ...user,
-                    status: UserStatus.AUTHENTICATED
+                    status: UserStatus.UNAUTHENTICATED,
+                    authMessage: 'PASSWORD SUCCESSFULLY RESET! please use new credentials now.'
                 });
             },
             onFailure: (err) => {
@@ -168,23 +166,53 @@ export const useVentee = (userPool: CognitoUserPool) => {
     let onCreateNewUser = () => {
         setUser({
             ...user,
-            status: UserStatus.SIGN_UP
+            status: UserStatus.SIGN_UP,
+            authMessage: ''
         });
     };
 
     let onForgotPassword = () => {
         setUser({
             ...user,
-            status: UserStatus.SEND_VERIFICATION
+            status: UserStatus.SEND_VERIFICATION,
+            authMessage: ''
         });
     };
+
+    let extraAuthActions: ExtraAuthAction[] = [];
+
+    if (user.status === UserStatus.UNAUTHENTICATED) {
+        extraAuthActions.push(
+            {
+                text: 'forgot you password?',
+                onClick: onForgotPassword
+            },
+            {
+                text: 'Need an account? Sign up',
+                onClick: onCreateNewUser
+            }
+        );
+    }
+    if (user.status === UserStatus.SIGN_UP) {
+        extraAuthActions.push({
+            text: 'Already have an account? Sign in',
+            onClick: () => (setUser({ ...user, status: UserStatus.UNAUTHENTICATED, authMessage: '' }))
+        });
+    }
+    if (user.status === UserStatus.SEND_VERIFICATION) {
+        extraAuthActions.push({
+            text: 'Wait, I remember now. Sign in',
+            onClick: () => (setUser({ ...user, status: UserStatus.UNAUTHENTICATED, authMessage: '' }))
+        });
+    }
 
     return {
         user,
         onCreateNewUser,
         onForgotPassword,
         definition,
-        footeractions
+        footeractions,
+        extraAuthActions
     };
 
 };

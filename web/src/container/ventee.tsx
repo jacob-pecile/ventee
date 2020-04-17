@@ -14,14 +14,20 @@ interface VenteeProps {
 const Ventee = (props: VenteeProps) => {
     let { userPool } = props;
 
-    let { user, definition, footeractions } = useVentee(userPool);
+    let { user, definition, footeractions, extraAuthActions } = useVentee(userPool);
     let isAuthenticated = user.status === UserStatus.AUTHENTICATED;
 
 
     return (
         <div className={props.className}>
             {!isAuthenticated ?
-                <OAuthContainer definition={definition} footerActions={footeractions} status={user.status} /> :
+                <OAuthContainer
+                    definition={definition}
+                    footerActions={footeractions}
+                    status={user.status}
+                    extraAuthActions={extraAuthActions}
+                    bannerMessage={user.authMessage}
+                /> :
                 <span>got em</span>}
         </div>
     );

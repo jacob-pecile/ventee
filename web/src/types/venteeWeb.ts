@@ -2,6 +2,7 @@ export interface User {
     status: UserStatus;
     userName?: string;
     email?: string;
+    authMessage?: string;
 }
 
 export enum UserStatus {
@@ -11,4 +12,9 @@ export enum UserStatus {
     EMAIL_CONFIRMATION = 3,
     PASSWORD_RESET = 4,
     SEND_VERIFICATION = 5
+}
+
+export interface ExtraAuthAction {
+    text: string;
+    onClick: () => void;
 }
