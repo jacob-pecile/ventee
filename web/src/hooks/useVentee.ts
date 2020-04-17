@@ -3,6 +3,7 @@ import { User, UserStatus, ExtraAuthAction } from '../types/venteeWeb';
 import { FormDefinition } from 'gotta-go-form';
 import { CognitoUserPool, CognitoUser, AuthenticationDetails, CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import { handleOAuthForm } from './handlers/handleOauthForm';
+import axios from 'axios';
 
 var Cookies = require('js-cookie');
 var JWTDecode = require('jwt-decode');
@@ -31,6 +32,18 @@ export const useVentee = (userPool: CognitoUserPool) => {
                 console.log(result.getAccessToken().getJwtToken());
 
                 Cookies.set('ventee_jwt', jwt);
+
+                axios.interceptors.request.use(
+                    config => {
+                        config.headers = { ...config.headers, Authorization: jwt };
+
+                        return config;
+                    },
+                    error => {
+                        console.error(error);
+                        return Promise.reject(error);
+                    }
+                );
 
                 setUser({
                     ...user,
@@ -227,11 +240,41 @@ const confirmJWT = (userPool: CognitoUserPool) => (): User => {
         };
     }
 
-    //TODO: check expiry
+    let JWTobj = JWTDecode(jwt);
+
+    if (JWTobj.exp * 1000 < (new Date()).getTime()) {
+        let cognitoUser = userPool.getCurrentUser();
+
+        return cognitoUser.getSession((err, session) => {
+            if (err) {
+                alert(err.message || JSON.stringify(err));
+                return {
+                    status: UserStatus.UNAUTHENTICATED
+                };
+            }
+            let refresh_token = session.getRefreshToken();
+            return cognitoUser.refreshSession(refresh_token, (err, session) => {
+                if (err) {
+                    alert(err.message || JSON.stringify(err));
+                    return {
+                        status: UserStatus.UNAUTHENTICATED
+                    };
+                }
+                let jwt = session.getIdToken().getJwtToken();
+
+                Cookies.set('ventee_jwt', jwt);
+
+                return {
+                    status: UserStatus.AUTHENTICATED,
+                    userName: JWTobj.username
+                };
+            });
+        });
+    }
 
     return {
         status: UserStatus.AUTHENTICATED,
-        userName: JWTDecode(jwt).username
+        userName: JWTobj.username
     };
 
 };
