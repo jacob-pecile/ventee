@@ -1,5 +1,5 @@
 import { errorResponse, successfulResponse } from './responses';
-import { createVent } from './repository';
+import { createVent, getUserVents } from './repository';
 
 exports.handler = async (event, context): Promise<any> => {
     console.log('I\'m in');
@@ -12,7 +12,8 @@ exports.handler = async (event, context): Promise<any> => {
         console.log(event.requestContext.authorizer)
 
         const MethodCalculator = {
-            POST: createVent
+            POST: createVent,
+            GET: getUserVents
         }
 
         let method = MethodCalculator[event.httpMethod]
@@ -21,7 +22,7 @@ exports.handler = async (event, context): Promise<any> => {
             return errorResponse(400, 'that verb is not supported', context.awsRequestId);
         }
 
-        let body = await method(JSON.parse(event.body));
+        let body = await method(event);
         return successfulResponse(200, body);
     } catch (err) {
         console.log(err);
