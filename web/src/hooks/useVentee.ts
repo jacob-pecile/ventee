@@ -28,22 +28,12 @@ export const useVentee = (userPool: CognitoUserPool) => {
         cognitoUser.authenticateUser(authenticationDetails, {
 
             onSuccess: (result) => {
-                let jwt = result.getAccessToken().getJwtToken();
-                console.log(result.getAccessToken().getJwtToken());
+                let jwt = result.getIdToken().getJwtToken();
+                console.log(result.getIdToken());
 
                 Cookies.set('ventee_jwt', jwt);
 
-                axios.interceptors.request.use(
-                    config => {
-                        config.headers = { ...config.headers, Authorization: jwt };
-
-                        return config;
-                    },
-                    error => {
-                        console.error(error);
-                        return Promise.reject(error);
-                    }
-                );
+                setAuthHeader(jwt);
 
                 setUser({
                     ...user,
@@ -263,6 +253,7 @@ const confirmJWT = (userPool: CognitoUserPool) => (): User => {
                 let jwt = session.getIdToken().getJwtToken();
 
                 Cookies.set('ventee_jwt', jwt);
+                setAuthHeader(jwt);
 
                 return {
                     status: UserStatus.AUTHENTICATED,
@@ -272,9 +263,24 @@ const confirmJWT = (userPool: CognitoUserPool) => (): User => {
         });
     }
 
+    setAuthHeader(jwt);
     return {
         status: UserStatus.AUTHENTICATED,
         userName: JWTobj.username
     };
 
+};
+
+const setAuthHeader = (jwt: string) => {
+    axios.interceptors.request.use(
+        config => {
+            config.headers = { ...config.headers, Authorization: jwt };
+
+            return config;
+        },
+        error => {
+            console.error(error);
+            return Promise.reject(error);
+        }
+    );
 };

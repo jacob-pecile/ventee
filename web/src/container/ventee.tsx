@@ -5,6 +5,7 @@ import { useVentee } from '../hooks/useVentee';
 
 import { UserStatus } from '../types/venteeWeb';
 import OAuthContainer from '../components/OAuthContainer';
+import VentView from './ventView';
 
 interface VenteeProps {
     userPool: CognitoUserPool;
@@ -28,7 +29,7 @@ const Ventee = (props: VenteeProps) => {
                     extraAuthActions={extraAuthActions}
                     bannerMessage={user.authMessage}
                 /> :
-                <span>got em</span>}
+                <VentView />}
         </div>
     );
 };
