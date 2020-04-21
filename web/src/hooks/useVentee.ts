@@ -10,7 +10,11 @@ var JWTDecode = require('jwt-decode');
 
 export const useVentee = (userPool: CognitoUserPool) => {
 
-    const [user, setUser] = useState(confirmJWT(userPool));
+    const [user, setUser] = useState(confirmJWT);
+
+    if (user.status === UserStatus.REFRESHING) {
+        refreshToken(setUser, userPool);
+    }
 
     let definition: FormDefinition = handleOAuthForm(user);
 
@@ -220,7 +224,37 @@ export const useVentee = (userPool: CognitoUserPool) => {
 
 };
 
-const confirmJWT = (userPool: CognitoUserPool) => (): User => {
+const refreshToken = (setUser, userPool: CognitoUserPool) => {
+    let cognitoUser = userPool.getCurrentUser();
+    cognitoUser.getSession((err, session) => {
+        if (err) {
+            alert(err.message || JSON.stringify(err));
+            setUser({
+                status: UserStatus.UNAUTHENTICATED
+            });
+        }
+        let refresh_token = session.getRefreshToken();
+        return cognitoUser.refreshSession(refresh_token, (err, session) => {
+            if (err) {
+                alert(err.message || JSON.stringify(err));
+                setUser({
+                    status: UserStatus.UNAUTHENTICATED
+                });
+            }
+            let jwt = session.getIdToken().getJwtToken();
+
+            Cookies.set('ventee_jwt', jwt);
+            setAuthHeader(jwt);
+
+            return {
+                status: UserStatus.AUTHENTICATED,
+                userName: cognitoUser.getUsername()
+            };
+        });
+    });
+};
+
+const confirmJWT = (): User => {
 
     let jwt = Cookies.get('ventee_jwt');
 
@@ -233,34 +267,9 @@ const confirmJWT = (userPool: CognitoUserPool) => (): User => {
     let JWTobj = JWTDecode(jwt);
 
     if (JWTobj.exp * 1000 < (new Date()).getTime()) {
-        let cognitoUser = userPool.getCurrentUser();
-
-        return cognitoUser.getSession((err, session) => {
-            if (err) {
-                alert(err.message || JSON.stringify(err));
-                return {
-                    status: UserStatus.UNAUTHENTICATED
-                };
-            }
-            let refresh_token = session.getRefreshToken();
-            return cognitoUser.refreshSession(refresh_token, (err, session) => {
-                if (err) {
-                    alert(err.message || JSON.stringify(err));
-                    return {
-                        status: UserStatus.UNAUTHENTICATED
-                    };
-                }
-                let jwt = session.getIdToken().getJwtToken();
-
-                Cookies.set('ventee_jwt', jwt);
-                setAuthHeader(jwt);
-
-                return {
-                    status: UserStatus.AUTHENTICATED,
-                    userName: JWTobj.username
-                };
-            });
-        });
+        return {
+            status: UserStatus.REFRESHING
+        };
     }
 
     setAuthHeader(jwt);

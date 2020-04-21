@@ -6,6 +6,7 @@ export interface User {
 }
 
 export enum UserStatus {
+    REFRESHING = -1,
     UNAUTHENTICATED = 0,
     AUTHENTICATED = 1,
     SIGN_UP = 2,

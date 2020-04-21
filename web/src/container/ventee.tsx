@@ -5,6 +5,7 @@ import { useVentee } from '../hooks/useVentee';
 
 import { UserStatus } from '../types/venteeWeb';
 import OAuthContainer from '../components/OAuthContainer';
+import LoadingSpinner from '../components/LoadingSpinner';
 import VentView from './ventView';
 
 interface VenteeProps {
@@ -21,15 +22,17 @@ const Ventee = (props: VenteeProps) => {
 
     return (
         <div className={props.className}>
-            {!isAuthenticated ?
-                <OAuthContainer
-                    definition={definition}
-                    footerActions={footeractions}
-                    status={user.status}
-                    extraAuthActions={extraAuthActions}
-                    bannerMessage={user.authMessage}
-                /> :
-                <VentView />}
+            <LoadingSpinner isLoading={user.status === UserStatus.REFRESHING}>
+                {!isAuthenticated ?
+                    <OAuthContainer
+                        definition={definition}
+                        footerActions={footeractions}
+                        status={user.status}
+                        extraAuthActions={extraAuthActions}
+                        bannerMessage={user.authMessage}
+                    /> :
+                    <VentView />}
+            </LoadingSpinner>
         </div>
     );
 };
