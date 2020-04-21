@@ -20,20 +20,31 @@ export const createVent = async (event): Promise<void> => {
 
 export const getUserVents = async (event): Promise<Vent[]> => {
 
+    let userName = event.requestContext.authorizer.claims['cognito:username'];
+
     let query = {
         TableName: 'Vents',
-    }
+        FilterExpression: `userName = :userName`,
+        ExpressionAttributeValues: {
+            ":userName": userName
+        }
+    };
 
-    const request = await dynamoDB.query(query, (err, data) => {
+    const request = await dynamoDB.scan(query, (err, data) => {
         if (err) {
             console.log("unable to query. Error" + JSON.stringify(err, null, 2))
-            throw err;
+            return err;
         }
 
         return data;
     });
 
     const result = await request.promise();
+    console.log(result);
+
+    if (!result.Items) {
+        throw result.$response.error;
+    }
 
     return result.Items as Vent[];
 }
