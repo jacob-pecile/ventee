@@ -16,6 +16,8 @@ export default styled(LoadingMask)`
     align-items: center;
     background: #000000;
     opacity: 0.5;
+    height: 100%;
+    width: 100%;
 
     & > span {
         font-weight: 600;

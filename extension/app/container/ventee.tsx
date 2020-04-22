@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { useVentee } from '../hooks/useventee';
 import { Form } from 'gotta-go-form';
+import LodingMask from '../components/loadingMask';
 
 interface VenteeProps {
     className?: string;
@@ -10,10 +11,11 @@ interface VenteeProps {
 
 const Ventee = (props: VenteeProps) => {
 
-    let { definition, footeractions, vented } = useVentee();
+    let { definition, footeractions, vented, isAuthenticated } = useVentee();
 
     return (
         <div className={props.className}>
+            {!isAuthenticated && <LodingMask />}
             <canvas id="congratz" className={`${vented ? 'vented' : ''}`}></canvas>
             {!vented &&
                 <Form formDefinition={definition} footerActions={footeractions} />}

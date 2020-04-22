@@ -18,16 +18,17 @@
   },
   "homepage": "https://github.com/jacob-pecile/ventee#readme",
   "dependencies": {
-    "aws-amplify": "^3.0.8",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "confetti-js": "0.0.18",
     "gotta-go-form": "^1.0.21",
+    "jwt-decode": "^2.2.0",
     "react": "16.9.0",
     "react-dom": "^16.9.0",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
+    "@types/chrome": "0.0.104",
     "@types/node": "^13.11.1",
     "@types/react": "^16.9.34",
     "parcel-bundler": "^1.12.4",
