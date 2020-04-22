@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html --open",
-    "build": "parcel build index.tsx"
+    "build": "parcel build index.html",
+    "deploy": "aws s3 sync dist/ s3://ventee"
   },
   "author": "",
   "license": "ISC",
