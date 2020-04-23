@@ -234,7 +234,7 @@ const refreshToken = (setUser, userPool: CognitoUserPool) => {
             });
         }
         let refresh_token = session.getRefreshToken();
-        return cognitoUser.refreshSession(refresh_token, (err, session) => {
+        cognitoUser.refreshSession(refresh_token, (err, session) => {
             if (err) {
                 alert(err.message || JSON.stringify(err));
                 setUser({
@@ -246,10 +246,10 @@ const refreshToken = (setUser, userPool: CognitoUserPool) => {
             Cookies.set('ventee_jwt', jwt);
             setAuthHeader(jwt);
 
-            return {
+            setUser({
                 status: UserStatus.AUTHENTICATED,
                 userName: cognitoUser.getUsername()
-            };
+            });
         });
     });
 };

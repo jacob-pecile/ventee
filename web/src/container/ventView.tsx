@@ -15,7 +15,7 @@ const VentView = (props: VentViewProps) => {
 
     let { vents } = useView();
 
-    let ventCards = vents && vents.map(vent => <VentCard vent={vent} />);
+    let ventCards = vents && vents.map((vent, i) => <VentCard key={i} vent={vent} />);
 
     if (vents !== null && vents.length === 0) {
         return (
