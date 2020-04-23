@@ -55,7 +55,7 @@ export default styled(OAuthContainer)`
 
         & > span {
             font-weight: 600;
-            font-family: sans-serif
+            font-family: sans-serif;
         }
     }
 

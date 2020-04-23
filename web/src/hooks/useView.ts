@@ -3,7 +3,7 @@ import { get } from '../services/api';
 
 export const useView = () => {
 
-    const [vents, setVents] = useState([]);
+    const [vents, setVents] = useState(null);
 
     useEffect(() => {
         get('vent').then(result => setVents(result));

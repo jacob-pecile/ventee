@@ -13,9 +13,10 @@ const VentCard = (props: VentCardProps) => {
 
     return (
         <div className={className}>
-            <span>{vent.url}</span>
-            <VentProperty label="comment" value={vent.comment} />
-            <VentProperty label="vent" value={vent.vent} />
+            <VentProperty label="Vented At" value={(new Date(vent.timeOfCreation)).toISOString()} orientation="vertical" />
+            <VentProperty label="Comment Location" value={vent.url} orientation="vertical" />
+            <VentProperty label="Comment" value={vent.comment} orientation="vertical" />
+            <VentProperty label="Vent" value={vent.vent} orientation="vertical" />
         </div>
     );
 };
@@ -25,7 +26,10 @@ export default styled(VentCard)`
     flex-direction: column;
     border: 1px solid #d8d8d8;
     box-shadow: 0 5px 15px rgba(0,0,0,.5);
-    padding: 8px;
+    padding: 16px;
     margin: 4px;
     background: #ffffff;
+    height: 30%;
+    width: 20%;
+    font-family: sans-serif;
 `;

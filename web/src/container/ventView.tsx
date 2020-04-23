@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useView } from '../hooks/useView';
 import VentCard from '../components/VentCard';
 import LoadingSpinner from '../components/LoadingSpinner';
+import Header from '../components/Header';
 
 interface VentViewProps {
     className?: string;
@@ -24,16 +25,22 @@ const VentView = (props: VentViewProps) => {
     }
 
     return (
-        <div className={className}><LoadingSpinner isLoading={vents === null}>{ventCards}</LoadingSpinner></div>
+        <div className={className}>
+            <Header />
+            <LoadingSpinner isLoading={vents === null}>
+                <div className="vent-view-container">{ventCards}</div>
+            </LoadingSpinner>
+        </div>
     );
 };
 
 export default styled(VentView)`
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
 
     &.no-vents{
-        
         align-items: center;
         justify-content: center;
 
@@ -45,5 +52,13 @@ export default styled(VentView)`
             font-family: sans-serif;
             box-shadow: 0 5px 15px rgba(0,0,0,.5);
         }
+    }
+
+    & > .vent-view-container {
+        display: flex;
+        flex-wrap: wrap;
+        width: calc(100% - 64px);
+        height: calc(100% - 64px - 56px);
+        padding: 32px;
     }
 `;

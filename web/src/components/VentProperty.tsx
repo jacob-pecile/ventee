@@ -11,11 +11,12 @@ interface VentPropertyProps {
 const VentProperty = (props: VentPropertyProps) => (
     <div className={props.className}>
         <div className="property-key">{props.label}:</div>
-        <pre className="property-value">{props.value}</pre>
+        <pre className="property-value">{props.value || 'N/A'}</pre>
     </div>
 );
 
 export default styled(VentProperty)`
+    margin-top: 8px;
     display: flex;
     flex-direction: ${props => props.orientation === 'vertical' ? 'column' : 'row'};
     justify-content: start;
@@ -34,5 +35,10 @@ export default styled(VentProperty)`
     & > .property-value{
         margin: 0;
         white-space: pre-line;
+        border: 1px solid #d8d8d8;
+        border-radius: 3px;
+        padding: 4px;
+        margin-top: 2px;
+        width: 100%;
     }
 `;
