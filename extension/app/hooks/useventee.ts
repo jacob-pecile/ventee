@@ -47,7 +47,8 @@ export const useVentee = () => {
     };
 
     let onVented = (vent) => {
-        chrome.tabs.query({ active: true, lastFocusedWindow: true }, async (tabs) => {
+        chrome.tabs.query({ active: true }, async (tabs) => {
+            console.log(tabs);
             vent = {
                 ...vent,
                 url: tabs.length ? tabs[0].url : null,

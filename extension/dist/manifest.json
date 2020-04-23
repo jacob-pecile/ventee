@@ -21,6 +21,7 @@
     "https://9cxulb4px0.execute-api.us-east-1.amazonaws.com/*",
     "cookies",
     "*://ventee.s3-website-us-east-1.amazonaws.com/*",
-    "tabs"
+    "tabs",
+    "activeTab"
   ]
 }
