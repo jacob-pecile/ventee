@@ -153,6 +153,21 @@ export const useVentee = (userPool: CognitoUserPool) => {
         });
     };
 
+    let onSignOut = () => {
+        let userData = {
+            Username: user.userName,
+            Pool: userPool
+        };
+
+        let cognitoUser = new CognitoUser(userData);
+        cognitoUser.signOut();
+        Cookies.remove('ventee_jwt');
+        setUser({
+            ...user,
+            status: UserStatus.UNAUTHENTICATED
+        });
+    };
+
     let submissionCalculator = {
         [UserStatus.UNAUTHENTICATED]: onLogin,
         [UserStatus.SIGN_UP]: onSignUp,
@@ -219,7 +234,8 @@ export const useVentee = (userPool: CognitoUserPool) => {
         onForgotPassword,
         definition,
         footeractions,
-        extraAuthActions
+        extraAuthActions,
+        onSignOut
     };
 
 };
@@ -275,7 +291,7 @@ const confirmJWT = (): User => {
     setAuthHeader(jwt);
     return {
         status: UserStatus.AUTHENTICATED,
-        userName: JWTobj.username
+        userName: JWTobj['cognito:username']
     };
 
 };

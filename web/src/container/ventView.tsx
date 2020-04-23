@@ -7,11 +7,12 @@ import Header from '../components/Header';
 
 interface VentViewProps {
     className?: string;
+    onSignOut: () => void;
     userName: string;
 }
 
 const VentView = (props: VentViewProps) => {
-    let { className } = props;
+    let { className, userName, onSignOut } = props;
 
     let { vents } = useView();
 
@@ -26,7 +27,7 @@ const VentView = (props: VentViewProps) => {
 
     return (
         <div className={className}>
-            <Header />
+            <Header userName={userName} onSignOut={onSignOut} />
             <LoadingSpinner isLoading={vents === null}>
                 <div className="vent-view-container">{ventCards}</div>
             </LoadingSpinner>

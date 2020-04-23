@@ -16,7 +16,7 @@ interface VenteeProps {
 const Ventee = (props: VenteeProps) => {
     let { userPool } = props;
 
-    let { user, definition, footeractions, extraAuthActions } = useVentee(userPool);
+    let { user, definition, footeractions, extraAuthActions, onSignOut } = useVentee(userPool);
     let isAuthenticated = user.status === UserStatus.AUTHENTICATED;
 
 
@@ -31,7 +31,7 @@ const Ventee = (props: VenteeProps) => {
                         extraAuthActions={extraAuthActions}
                         bannerMessage={user.authMessage}
                     /> :
-                    <VentView />}
+                    <VentView userName={user.userName} onSignOut={onSignOut} />}
             </LoadingSpinner>
         </div>
     );
