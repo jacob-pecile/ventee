@@ -60,5 +60,6 @@ export default styled(VentView)`
         width: calc(100% - 64px);
         height: calc(100% - 64px - 56px);
         padding: 32px;
+        overflow: auto;
     }
 `;

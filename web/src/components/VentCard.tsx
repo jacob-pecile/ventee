@@ -32,4 +32,5 @@ export default styled(VentCard)`
     height: 30%;
     width: 20%;
     font-family: sans-serif;
+    overflow: auto;
 `;

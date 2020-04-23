@@ -40,5 +40,6 @@ export default styled(VentProperty)`
         padding: 4px;
         margin-top: 2px;
         width: 100%;
+        word-wrap:break-word;
     }
 `;
