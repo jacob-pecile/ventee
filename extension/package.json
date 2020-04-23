@@ -25,6 +25,7 @@
     "jwt-decode": "^2.2.0",
     "react": "16.9.0",
     "react-dom": "^16.9.0",
+    "react-loader-spinner": "^3.1.14",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {

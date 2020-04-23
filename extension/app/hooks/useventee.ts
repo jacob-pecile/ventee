@@ -46,9 +46,16 @@ export const useVentee = () => {
         ]
     };
 
-    let onVented = async (vent) => {
-        await API.post('vent', vent);
-        setVented(true);
+    let onVented = (vent) => {
+        chrome.tabs.query({ active: true, lastFocusedWindow: true }, async (tabs) => {
+            vent = {
+                ...vent,
+                url: tabs.length ? tabs[0].url : null,
+                userName: userName
+            };
+            await API.post('vent', vent);
+            setVented(true);
+        });
     };
 
     let footeractions = [

@@ -4,6 +4,7 @@ import { createVent, getUserVents } from './repository';
 exports.handler = async (event, context): Promise<any> => {
     console.log('I\'m in');
     console.log(event);
+    console.log(context);
 
     try {
         if (!event.requestContext.authorizer) {

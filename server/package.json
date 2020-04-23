@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/handler.ts",
   "scripts": {
+    "prebuild": "rm dist/*",
     "build": "parcel build src/handler.ts --no-cache --no-source-maps --target node --bundle-node-modules --out-file index.js",
     "transpile": "./node_modules/.bin/tsc",
     "deploy": "aws lambda update-function-code --function-name Ventee-api --zip-file fileb://dist/index.zip"

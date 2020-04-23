@@ -12,20 +12,24 @@ const LoadingSpinner = (props: LoadingSpinnerProps) => {
     let { className, isLoading, children } = props;
 
     return isLoading ?
-        <div className={className}><Loader
-            type="Puff"
-            color="#00BFFF"
-            height={100}
-            width={100}
-        /></div> :
+        <div className={className}>
+            <div><Loader
+                type="Puff"
+                color="#00BFFF"
+                height={100}
+                width={100}
+            /></div></div> :
         children;
 };
 
 export default styled(LoadingSpinner)`
     display: flex;
-    background: #ffffff;
-    padding: 8px;
-    border-radius: 3px;
     align-items: center;
     justify-content: center;
+    
+    & > div{
+        background: #ffffff;
+        padding: 8px;
+        border-radius: 3px;
+    }
 `;
