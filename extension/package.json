@@ -18,10 +18,12 @@
   },
   "homepage": "https://github.com/jacob-pecile/ventee#readme",
   "dependencies": {
+    "amazon-cognito-identity-js": "^4.2.1",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "confetti-js": "0.0.18",
     "gotta-go-form": "^1.0.21",
+    "js-cookie": "^2.2.1",
     "jwt-decode": "^2.2.0",
     "react": "16.9.0",
     "react-dom": "^16.9.0",

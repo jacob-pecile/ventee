@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 var JWTDecode = require('jwt-decode');
+var Cookies = require('js-cookie');
 import axios from 'axios';
+import { CognitoUserPool } from 'amazon-cognito-identity-js';
+import { poolData } from '../types/ventee';
 
 let Authentication = {
     isAuthenticated: false,
@@ -15,26 +18,20 @@ export const useAuthentication = () => {
         chrome.cookies.get({ url: process.env.ADMIN_URL, name: 'ventee_jwt' }, (cookie) => {
             console.log(cookie);
             let jwt = cookie && cookie.value;
-            let jwtObject = jwt && JWTDecode(jwt);
 
-            if (!jwt || jwtObject.exp * 1000 < (new Date()).getTime()) {
+            if (!jwt) {
                 console.log('MOVE!');
                 chrome.tabs.create({ url: process.env.ADMIN_URL });
                 return;
             }
 
-            axios.interceptors.request.use(
-                config => {
-                    config.headers = { ...config.headers, Authorization: jwt };
+            let jwtObject = JWTDecode(jwt);
+            if (jwtObject.exp * 1000 < (new Date()).getTime()) {
+                refreshToken(setAuth);
+                return;
+            }
 
-                    return config;
-                },
-                error => {
-                    console.error(error);
-                    return Promise.reject(error);
-                }
-            );
-
+            setAuthHeader(jwt);
             setAuth({
                 isAuthenticated: true,
                 userName: jwtObject['cognito:username']
@@ -44,4 +41,45 @@ export const useAuthentication = () => {
     }, []);
 
     return auth;
+};
+
+const refreshToken = (setAuth) => {
+    var userPool = new CognitoUserPool(poolData);
+    let cognitoUser = userPool.getCurrentUser();
+    cognitoUser.getSession((err, session) => {
+        if (err) {
+            alert(err.message || JSON.stringify(err));
+            return;
+        }
+        let refresh_token = session.getRefreshToken();
+        cognitoUser.refreshSession(refresh_token, (err, session) => {
+            if (err) {
+                alert(err.message || JSON.stringify(err));
+                return;
+            }
+            let jwt = session.getIdToken().getJwtToken();
+
+            Cookies.set('ventee_jwt', jwt);
+            setAuthHeader(jwt);
+
+            setAuth({
+                isAuthenticated: true,
+                userName: JWTDecode(jwt)['cognito:username']
+            });
+        });
+    });
+};
+
+const setAuthHeader = (jwt: string) => {
+    axios.interceptors.request.use(
+        config => {
+            config.headers = { ...config.headers, Authorization: jwt };
+
+            return config;
+        },
+        error => {
+            console.error(error);
+            return Promise.reject(error);
+        }
+    );
 };
