@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Ventee",
   "description": "Chrome extension for people who need a place to vent",
-  "version": "1.0",
+  "version": "1.1",
   "icons": {
     "16": "icon.png",
     "48": "icon48.png",
