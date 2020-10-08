@@ -6,7 +6,8 @@ import { poolData } from '../types/ventee';
 
 let Authentication = {
     isAuthenticated: false,
-    userName: ''
+    userName: '',
+    userId: null
 };
 
 export const useAuthentication = () => {
@@ -33,7 +34,8 @@ export const useAuthentication = () => {
             setAuthHeader(jwt);
             setAuth({
                 isAuthenticated: true,
-                userName: jwtObject['cognito:username']
+                userName: jwtObject['cognito:username'],
+                userId: jwtObject['sub']
             });
 
         });
@@ -69,7 +71,8 @@ const refreshToken = (setAuth, userName: string) => {
 
                 setAuth({
                     isAuthenticated: true,
-                    userName: JWTDecode(jwt)['cognito:username']
+                    userName: JWTDecode(jwt)['cognito:username'],
+                    userId: JWTDecode(jwt)['sub']
                 });
             });
 

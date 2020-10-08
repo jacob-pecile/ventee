@@ -9,7 +9,7 @@ export const useVentee = () => {
 
     const [vented, setVented] = useState(false);
 
-    let { isAuthenticated, userName } = useAuthentication();
+    let { isAuthenticated, userName, userId } = useAuthentication();
     console.log('userName is :' + userName);
 
     useEffect(() => {
@@ -52,7 +52,8 @@ export const useVentee = () => {
             vent = {
                 ...vent,
                 url: tabs.length ? tabs[0].url : null,
-                userName: userName
+                userName: userName,
+                userId
             };
             await API.post('vent', vent);
             setVented(true);

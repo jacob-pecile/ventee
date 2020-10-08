@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DynamoDB } from 'aws-sdk';
-import { Vent } from './types';
+import { Vent } from '../types';
 
 const dynamoDB = new DynamoDB.DocumentClient();
 
@@ -20,13 +20,13 @@ export const createVent = async (event): Promise<void> => {
 
 export const getUserVents = async (event): Promise<Vent[]> => {
 
-    let userName = event.requestContext.authorizer.claims['cognito:username'];
+    let userId = event.requestContext.authorizer.claims['sub'];
 
     let query = {
         TableName: 'Vents',
-        FilterExpression: `userName = :userName`,
+        FilterExpression: `userId = :userId`,
         ExpressionAttributeValues: {
-            ":userName": userName
+            ":userId": userId
         }
     };
 
