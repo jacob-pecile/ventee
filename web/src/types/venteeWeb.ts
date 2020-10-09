@@ -27,4 +27,22 @@ export interface Vent {
     userName: string;
     url: string;
     timeOfCreation?: number;
+    ventActions?: VentAction[];
+}
+
+export interface Tag {
+    tagId?: string;
+    tagName: string;
+    createdById: string;
+}
+
+export interface TagToVent {
+    tagId: string;
+    ventId: string;
+}
+
+export interface VentAction {
+    title: string;
+    icon: string;
+    onClick: () => void;
 }

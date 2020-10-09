@@ -1,6 +1,6 @@
 import { errorResponse, successfulResponse } from './responses';
 import { createVent, getUserVents } from './repository/ventRepository';
-import { createTag, addVentToTag } from './repository/tagRepository';
+import { createTag, addVentToTag, getTagByUser } from './repository/tagRepository';
 
 exports.handler = async (event, context): Promise<any> => {
     console.log('I\'m in');
@@ -16,6 +16,7 @@ exports.handler = async (event, context): Promise<any> => {
         const MethodCalculator = {
             'POST/vent': createVent,
             'GET/vent': getUserVents,
+            'GET/tag': getTagByUser,
             'POST/tag': createTag,
             'POST/tagToVent': addVentToTag,
         }
@@ -23,7 +24,7 @@ exports.handler = async (event, context): Promise<any> => {
         let method = MethodCalculator[event.httpMethod + event.path]
 
         if (!method) {
-            return errorResponse(400, 'that verb is not supported', context.awsRequestId);
+            return errorResponse(404, '', context.awsRequestId);
         }
 
         let body = await method(event);

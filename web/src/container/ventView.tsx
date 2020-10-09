@@ -29,7 +29,9 @@ const VentView = (props: VentViewProps) => {
         <div className={className}>
             <Header userName={userName} onSignOut={onSignOut} />
             <LoadingSpinner isLoading={vents === null}>
-                <div className="vent-view-container">{ventCards}</div>
+                <div className="vent-view-container">
+                    {ventCards}
+                </div>
             </LoadingSpinner>
         </div>
     );
