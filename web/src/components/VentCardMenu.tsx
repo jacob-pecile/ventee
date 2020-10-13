@@ -30,7 +30,7 @@ export default styled(VentCardMenu)`
   position: absolute;
   align-items: center;
   box-shadow: 0 5px 15px rgba(0,0,0,.5);
-  padding: 12px;
+  padding: 4px;
   border-radius: 4px;
   right: 100%;
   background-color: #ffffff;
@@ -38,5 +38,10 @@ export default styled(VentCardMenu)`
   & > div {
     display: flex;
     justify-content: space-between;
+    padding: 4px 8px;
+
+    &:hover {
+      background-color: #e5e5e5;
+    }
   }
 `;

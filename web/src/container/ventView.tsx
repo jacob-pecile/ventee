@@ -1,9 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { useView } from '../hooks/useView';
+import { Form } from 'gotta-go-form';
 import VentCard from '../components/VentCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Header from '../components/Header';
+import Dialog from '../components/designSystem/Dialog';
 
 interface VentViewProps {
     className?: string;
@@ -14,7 +16,7 @@ interface VentViewProps {
 const VentView = (props: VentViewProps) => {
     let { className, userName, onSignOut } = props;
 
-    let { vents } = useView();
+    let { vents, showTagDialog, onDialogClose, definition, footerActions } = useView();
 
     let ventCards = vents && vents.map((vent, i) => <VentCard key={i} vent={vent} />);
 
@@ -29,6 +31,11 @@ const VentView = (props: VentViewProps) => {
         <div className={className}>
             <Header userName={userName} onSignOut={onSignOut} />
             <LoadingSpinner isLoading={vents === null}>
+                {showTagDialog && 
+                    <Dialog title="Edit Tags" onClose={onDialogClose}>
+                        <Form formDefinition={definition} footerActions={footerActions} />
+                    </Dialog>
+                }
                 <div className="vent-view-container">
                     {ventCards}
                 </div>
@@ -64,5 +71,11 @@ export default styled(VentView)`
         height: calc(100% - 64px - 56px);
         padding: 32px;
         overflow: auto;
+    }
+
+    & .form-footer > div{
+        justify-content: center;
+        background: #ffffff;
+        border: none;
     }
 `;
