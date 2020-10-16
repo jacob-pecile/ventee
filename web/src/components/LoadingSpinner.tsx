@@ -26,6 +26,7 @@ export default styled(LoadingSpinner)`
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
     
     & > div{
         background: #ffffff;

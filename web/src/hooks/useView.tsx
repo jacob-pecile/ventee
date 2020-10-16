@@ -8,10 +8,13 @@ import CreatableSelect from 'react-select/creatable';
 export const useView = () => {
 
     let [vents, setVents] = useState(null);
+    let [tags, setTags] = useState(null);
     const [taggingVent, setTaggingVent] = useState(null);
+    const [showTagFilter, setShowTagFilter] = useState(false);
 
     useEffect(() => {
         get('vent').then(result => setVents(result));
+        get('tag').then(result => setTags(result));
     }, []);
 
     const onTagClick = (ventId: String) => () => {
@@ -67,5 +70,23 @@ export const useView = () => {
         }
     ];
 
-    return { vents, showTagDialog: taggingVent, onDialogClose, definition, footerActions };
+    const onFavourite = () => {
+        console.log('filter favourites');
+    };
+
+    const onTagFilter = () => {
+        setShowTagFilter(true);
+    };
+
+    return { 
+        vents,
+        showTagDialog: taggingVent,
+        onDialogClose, 
+        definition, 
+        footerActions, 
+        tags, 
+        onFavourite,
+        onTagFilter,
+        showTagFilter
+     };
 };

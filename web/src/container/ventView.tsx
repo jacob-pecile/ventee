@@ -6,6 +6,7 @@ import VentCard from '../components/VentCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Header from '../components/Header';
 import Dialog from '../components/designSystem/Dialog';
+import SideBar from '../components/SideBar';
 
 interface VentViewProps {
     className?: string;
@@ -16,7 +17,16 @@ interface VentViewProps {
 const VentView = (props: VentViewProps) => {
     let { className, userName, onSignOut } = props;
 
-    let { vents, showTagDialog, onDialogClose, definition, footerActions } = useView();
+    let { 
+        vents,
+        showTagDialog,
+        onDialogClose,
+        definition,
+        footerActions,
+        tags,
+        onFavourite,
+        onTagFilter,
+        showTagFilter } = useView();
 
     let ventCards = vents && vents.map((vent, i) => <VentCard key={i} vent={vent} />);
 
@@ -37,7 +47,10 @@ const VentView = (props: VentViewProps) => {
                     </Dialog>
                 }
                 <div className="vent-view-container">
-                    {ventCards}
+                    <SideBar onFavourite={onFavourite} onTagFilter={onTagFilter}/>
+                    <div className="vent-card-container">
+                        {ventCards}
+                    </div>
                 </div>
             </LoadingSpinner>
         </div>
@@ -66,11 +79,16 @@ export default styled(VentView)`
 
     & > .vent-view-container {
         display: flex;
-        flex-wrap: wrap;
-        width: calc(100% - 64px);
-        height: calc(100% - 64px - 56px);
-        padding: 32px;
+        width: 80%;
+        height: calc(100% - 56px);
         overflow: auto;
+
+        & > .vent-card-container{
+            width: calc(100% - 64px);
+            padding: 32px;
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
 
     & .form-footer > div{

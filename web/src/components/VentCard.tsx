@@ -44,7 +44,7 @@ export default styled(VentCard)`
     margin: 4px;
     background: #ffffff;
     height: 30%;
-    width: 20%;
+    width: 25%;
     font-family: sans-serif;
     overflow: auto;
     border-radius: 10px;
