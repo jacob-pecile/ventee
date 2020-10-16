@@ -1,6 +1,6 @@
 import { errorResponse, successfulResponse } from './responses';
 import { createVent, getUserVents } from './repository/ventRepository';
-import { createTag, addVentToTag, getTagByUser } from './repository/tagRepository';
+import { updateTags, addVentToTag, getTagByUser } from './repository/tagRepository';
 
 exports.handler = async (event, context): Promise<any> => {
     console.log('I\'m in');
@@ -17,11 +17,11 @@ exports.handler = async (event, context): Promise<any> => {
             'POST/vent': createVent,
             'GET/vent': getUserVents,
             'GET/tag': getTagByUser,
-            'POST/tag': createTag,
+            'POST/tag/{ventId}': updateTags,
             'POST/tagToVent': addVentToTag,
         }
 
-        let method = MethodCalculator[event.httpMethod + event.path]
+        let method = MethodCalculator[event.httpMethod + event.resource]
 
         if (!method) {
             return errorResponse(404, '', context.awsRequestId);

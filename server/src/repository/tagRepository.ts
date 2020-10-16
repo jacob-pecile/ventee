@@ -4,20 +4,31 @@ import {Tag} from '../types';
 
 const dynamoDB = new DynamoDB.DocumentClient();
 
-export const createTag = async (event): Promise<void> => {
-    let tag = JSON.parse(event.body);
-    const tagId = uuidv4();
+export const updateTags = async (event): Promise<void> => {
+    let tags = JSON.parse(event.body);
 
     let userId = event.requestContext.authorizer.claims['sub'];
+    console.log("ventId: " + event.pathParameters.ventId);
 
-    return dynamoDB.put({
-        TableName: 'Tags',
-        Item: {
-            ...tag,
-            tagId,
-            createdById: userId
-        }
-    }).promise().then();
+    let currentTags = await getTagByUser(event);
+    let currentTagNames = currentTags.map(t => t.tagName);
+
+    tags.filter(tag => !currentTagNames.includes(tag.tagName)).forEach(tag => {
+        const tagId = uuidv4();
+        dynamoDB.put({
+            TableName: 'Tags',
+            Item: {
+                ...tag,
+                tagId,
+                createdById: userId
+            },
+            ConditionExpression: 'createdById <> :userId AND tagName <> :tagName',
+            ExpressionAttributeValues: {
+                ":userId": userId,
+                ":tagName": tag.tagName
+            }
+        }).promise().then(); 
+    });
 }
 
 export const addVentToTag = async (event): Promise<void> => {

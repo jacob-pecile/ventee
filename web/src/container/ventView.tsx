@@ -6,7 +6,7 @@ import VentCard from '../components/VentCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Header from '../components/Header';
 import Dialog from '../components/designSystem/Dialog';
-import SideBar from '../components/SideBar';
+import SideBar from '../components/sidebar/SideBar';
 
 interface VentViewProps {
     className?: string;

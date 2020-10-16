@@ -38,7 +38,7 @@ export const useView = () => {
     }));
 
     const onSaveTags = (def) => {
-        post('tag', def.tagNames.map(tag => ({tagName: tag.value}))).then(onDialogClose);
+        post(`tag/${taggingVent}`, def.tagNames.map(tag => ({tagName: tag.value}))).then(onDialogClose);
     };
 
     const definition: FormDefinition = {
@@ -53,8 +53,10 @@ export const useView = () => {
                             <CreatableSelect
                                 isMulti
                                 onChange={(val) => {console.log(val); field.callback(val);} }
+                                options={field.options}
                             />
-                        )
+                        ),
+                        options: tags && tags.map(tag => ({value: tag.tagId, label: tag.tagName}))
                     }
                 ]
             }
@@ -74,7 +76,7 @@ export const useView = () => {
         console.log('filter favourites');
     };
 
-    const onTagFilter = () => {
+    const onTagFilter = (tagId: string) => () => {
         setShowTagFilter(true);
     };
 
