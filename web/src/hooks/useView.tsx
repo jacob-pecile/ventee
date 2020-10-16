@@ -38,7 +38,7 @@ export const useView = () => {
     }));
 
     const onSaveTags = (def) => {
-        post(`tag/${taggingVent}`, def.tagNames.map(tag => ({tagName: tag.value}))).then(onDialogClose);
+        post(`tag/${taggingVent}`, def.tagNames.map(tag => ({tagName: tag.label}))).then(onDialogClose);
     };
 
     const definition: FormDefinition = {

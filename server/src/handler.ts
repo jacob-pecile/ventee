@@ -1,6 +1,6 @@
 import { errorResponse, successfulResponse } from './responses';
 import { createVent, getUserVents } from './repository/ventRepository';
-import { updateTags, addVentToTag, getTagByUser } from './repository/tagRepository';
+import { updateTags, getTagByUser } from './repository/tagRepository';
 
 exports.handler = async (event, context): Promise<any> => {
     console.log('I\'m in');
@@ -17,8 +17,7 @@ exports.handler = async (event, context): Promise<any> => {
             'POST/vent': createVent,
             'GET/vent': getUserVents,
             'GET/tag': getTagByUser,
-            'POST/tag/{ventId}': updateTags,
-            'POST/tagToVent': addVentToTag,
+            'POST/tag/{ventId}': updateTags
         }
 
         let method = MethodCalculator[event.httpMethod + event.resource]

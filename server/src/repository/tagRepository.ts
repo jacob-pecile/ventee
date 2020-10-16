@@ -13,7 +13,10 @@ export const updateTags = async (event): Promise<void> => {
     let currentTags = await getTagByUser(event);
     let currentTagNames = currentTags.map(t => t.tagName);
 
-    tags.filter(tag => !currentTagNames.includes(tag.tagName)).forEach(tag => {
+    let newTags = tags.filter(tag => !currentTagNames.includes(tag.tagName))
+
+    let newTagsIds = [];
+    newTags.forEach(tag => {
         const tagId = uuidv4();
         dynamoDB.put({
             TableName: 'Tags',
@@ -21,27 +24,42 @@ export const updateTags = async (event): Promise<void> => {
                 ...tag,
                 tagId,
                 createdById: userId
-            },
-            ConditionExpression: 'createdById <> :userId AND tagName <> :tagName',
-            ExpressionAttributeValues: {
-                ":userId": userId,
-                ":tagName": tag.tagName
             }
         }).promise().then(); 
+        newTagsIds.push(tagId);
     });
+
+    let tagNames = tags.map(t => t.tagName);
+    let oldTags = currentTags.filter(tag => !tagNames.includes(tag.tagName))
+    updateVentToTag(newTagsIds, oldTags, event.pathParameters.ventId);
 }
 
-export const addVentToTag = async (event): Promise<void> => {
-  let tagtoVents = JSON.parse(event.body);
+const updateVentToTag = async (newTagsIds: String[], oldTags: Tag[], ventId): Promise<void> => {
+    let newtagtoVents = newTagsIds.map(tagId => ({
+        tagId: tagId,
+        ventId
+    }));
+    console.log(newtagtoVents);
 
-  tagtoVents.forEach(tagtoVent => {
+    newtagtoVents.forEach(tagtoVent => {
       dynamoDB.put({
         TableName: 'TagsToVent',
         Item: {
             ...tagtoVent
         }
-    }).promise().then();
-  });
+     }).promise().then();
+    });
+
+    oldTags.forEach(oldTag => {
+        dynamoDB.delete({
+          TableName: 'TagsToVent',
+          Key: ventId,
+          ConditionExpression: 'tagId = :tagId',
+          ExpressionAttributeValues: {
+            ":tagId": oldTag.tagId
+        }
+       }).promise().then();
+      });
   
 }
 
