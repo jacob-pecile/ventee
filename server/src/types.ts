@@ -20,6 +20,7 @@ export interface Tag {
 }
 
 export interface TagToVent {
+    tagsToVentId: string;
     tagId: string;
     ventId: string;
 }

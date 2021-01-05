@@ -7,7 +7,7 @@
     "prebuild": "rm dist/*",
     "build": "parcel build src/handler.ts --no-cache --no-source-maps --target node --bundle-node-modules --out-file index.js",
     "transpile": "./node_modules/.bin/tsc",
-    "deploy": "aws lambda update-function-code --function-name Ventee-api --zip-file fileb://dist/index.zip"
+    "deploy": "aws lambda update-function-code --profile ventee --function-name Ventee-api --zip-file fileb://dist/index.zip"
   },
   "keywords": [
     "node",
