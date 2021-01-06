@@ -16,7 +16,7 @@
     "@mdi/react": "^1.4.0",
     "amazon-cognito-identity-js": "^4.2.1",
     "aws-sdk": "^2.657.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "gotta-go-form": "^1.0.24",
     "js-cookie": "^2.2.1",
     "jwt-decode": "^2.2.0",
